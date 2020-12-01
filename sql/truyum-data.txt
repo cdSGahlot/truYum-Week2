@@ -1,0 +1,50 @@
+use truYum
+go
+--Frame SQL query to insert menu items
+insert into menu_Items values
+	('1','Sandwich','99.00','Yes','2017-03-15','Main Course','Yes'),
+	('2','Burger','129.00','Yes','2017-12-23','Main Course','NO'),
+	('3','Pizza','149.00','Yes','2017-08-21','Main Course','NO'),
+	('4','French Fries','57.00','NO','2017-07-02','Starters','Yes'),
+	('5','Chocolate Brownie','32.00','Yes','2022-11-02','Dessert','Yes');
+go
+
+--Frame SQL query to get all menu items
+select * from menu_Items;
+go
+
+--Frame SQL query to get all menu items which after launch date and is active.
+select * from menu_Items where item_date_of_launch<=GETDATE() and item_active='YES';
+go
+
+--Frame SQL query to get a menu items based on Menu Item Id
+select * from menu_Items where item_id=2;
+go
+
+--Frame update SQL menu_items table to update all the columns values based on Menu Item Id
+update menu_Items set
+item_name='Noodles',item_price='110.00',item_availability='Yes',item_date_of_launch=GETDATE(),item_category='Main Course',item_free_delivery='Yes' where item_id=3;
+go
+
+-- insert scripts for adding data into user and cart tables.In user table create two users. Once user will not have any entries in cart, while the other will have at least 3 items in the cart.
+insert into User values ('1','Shivank'),('2','Utsav');
+go
+
+insert into cart values ('1','2','4'),('2','2','2'),('3','2','3'),('4','2','5');
+go
+
+-- SQL query to get all menu items in a particular user’s cart
+select menu_Items.item_name, menu_Items.item_availability,menu_Items.item_price,menu_Items.item_category,User.user_name,cart.users_id
+from menu_Items  inner join cart on cart.item_id=menu_Items.item_id inner join User on User.user_Id=cart.users_id
+where cart.users_id='2';
+go
+
+-- SQL query to get the total price of all menu items in a particular user’s cart
+select sum(m.item_price) as Total,u.user_Id,u.user_name from menu_Items m inner join cart c on c.item_id=m.item_id inner join User u on u.user_Id=c.users_id
+where u.user_id='2'
+group by u.user_id;
+go
+
+-- SQL query to remove a menu items from Cart based on User Id and Menu Item Id
+delete from cart where users_id='2' and item_id='4';
+go
